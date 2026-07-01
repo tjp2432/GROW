@@ -33,6 +33,10 @@ with app.app_context():
         admin.set_password('admin123')
         db.session.add(admin)
         db.session.commit()
+    from models import Category
+    if not Category.query.first():
+        from seed import seed
+        seed()
 
 @login_manager.user_loader
 def load_user(user_id):
