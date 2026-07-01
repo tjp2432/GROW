@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% block title %}Perrone's INC - Growshop & Cultura Cannábica{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <p class="hero-subtitle">Bienvenido a</p>
+                <h1 class="hero-title">
+                    <span class="brand-text">PERRONE'S</span>
+                    <span class="brand-inc">INC</span>
+                </h1>
+                <p class="hero-desc">Tu growshop de confianza. Parafernalia, cultivo y cultura cannábica en un solo lugar. Calidad, variedad y la mejor atención.</p>
+                <div class="hero-actions">
+                    <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg">
+                        Explorar Productos <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    <a href="{{ url_for('blog') }}" class="btn btn-outline-light btn-lg ms-3">
+                        Leer Blog
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-scroll">
+        <span>Deslizá</span>
+        <i class="bi bi-chevron-down"></i>
+    </div>
+</section>
+
+{% if categories %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Categorías</h2>
+            <p>Explorá nuestra variedad de productos</p>
+        </div>
+        <div class="row g-3">
+            {% for cat in categories %}
+            <div class="col-lg-3 col-md-4 col-6">
+                <a href="{{ url_for('products', categoria=cat.slug) }}" class="category-card">
+                    <div class="category-icon">
+                        {% set icons = {'bongs': 'bi-cup-hot', 'pipas': 'bi-pip', 'papeles': 'bi-file-text', 'vaporizadores': 'bi-fan', 'iluminacion': 'bi-lightbulb', 'fertilizantes': 'bi-droplet', 'accesorios': 'bi-grid-3x3-gap', 'picadores': 'bi-gear'} %}
+                        <i class="bi {{ icons.get(cat.slug, 'bi-box') }}"></i>
+                    </div>
+                    <h5>{{ cat.name }}</h5>
+                    <span class="category-count">{{ cat.products|length }} productos</span>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if featured_products %}
+<section class="section bg-dark-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Productos Destacados</h2>
+            <p>Lo más elegido por nuestra comunidad</p>
+        </div>
+        <div class="row g-4">
+            {% for product in featured_products %}
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="product-card">
+                    <div class="product-img">
+                        {% if product.compare_price %}
+                        <span class="product-badge">OFERTA</span>
+                        {% endif %}
+                        {% if product.image %}
+                        <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" style="width:100%;height:100%;object-fit:cover;">
+                        {% else %}
+                        <div class="product-img-placeholder" data-category="{{ product.category.slug }}">
+                            {% set emojis = {'bongs': '🏺', 'pipas': '🚬', 'picadores': '⚙️', 'papeles': '📄', 'vaporizadores': '💨', 'iluminacion': '💡', 'fertilizantes': '🧪', 'accesorios': '🔧'} %}
+                            <span class="placeholder-emoji">{{ emojis.get(product.category.slug, '📦') }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="product-body">
+                        <span class="product-category">{{ product.category.name }}</span>
+                        <h5 class="product-title">{{ product.name }}</h5>
+                        <div class="product-price">
+                            {% if product.compare_price %}
+                            <span class="price-old">${{ "{:,.0f}".format(product.compare_price) }}</span>
+                            {% endif %}
+                            <span class="price-current">${{ "{:,.0f}".format(product.price) }}</span>
+                        </div>
+                        <div class="product-actions">
+                            <a href="{{ url_for('product_detail', slug=product.slug) }}" class="btn btn-sm btn-outline-primary w-100">Ver Detalle</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('products') }}" class="btn btn-primary">Ver Todos los Productos <i class="bi bi-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if blog_posts %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Últimos del Blog</h2>
+            <p>Contenido fresco sobre cultura, cultivo y más</p>
+        </div>
+        <div class="row g-4">
+            {% for post in blog_posts %}
+            <div class="col-lg-4 col-md-6">
+                <article class="blog-card">
+                    <div class="blog-img">
+                        {% if post.image %}
+                        <img src="{{ url_for('static', filename=post.image) }}" alt="{{ post.title }}" style="width:100%;height:100%;object-fit:cover;">
+                        {% else %}
+                        <div class="blog-img-placeholder">
+                            <span class="placeholder-icon"><i class="bi bi-pencil-square"></i></span>
+                        </div>
+                        {% endif %}
+                        <span class="blog-category">{{ post.category }}</span>
+                    </div>
+                    <div class="blog-body">
+                        <div class="blog-meta">
+                            <span><i class="bi bi-calendar3"></i> {{ post.created_at.strftime('%d/%m/%Y') }}</span>
+                            <span><i class="bi bi-person"></i> {{ post.author }}</span>
+                        </div>
+                        <h4>{{ post.title }}</h4>
+                        <p>{{ post.excerpt[:120] }}{% if post.excerpt|length > 120 %}...{% endif %}</p>
+                        <a href="{{ url_for('blog_post', slug=post.slug) }}" class="btn btn-link p-0">Seguir Leyendo <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('blog') }}" class="btn btn-outline-primary">Ver Todas las Notas</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="section cta-section">
+    <div class="container">
+        <div class="cta-box">
+            <h2>¿Sos mayor de 18 años?</h2>
+            <p>Este sitio contiene contenido sobre parafernalia y cultura cannábica. Confirmá que sos mayor de edad para navegar.</p>
+            <button class="btn btn-light btn-lg" onclick="localStorage.setItem('age_verified', 'true');this.closest('.cta-box').remove();">
+                Soy Mayor de 18
+            </button>
+        </div>
+    </div>
+</section>
+
+{% if not featured_products and not blog_posts and not categories %}
+<section class="section" style="min-height: 60vh;">
+    <div class="container text-center py-5">
+        <h2>Bienvenido a Perrone's INC</h2>
+        <p class="lead">Estamos preparando nuestro catálogo. Volvé pronto.</p>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+if (localStorage.getItem('age_verified') === 'true') {
+    document.querySelector('.cta-box')?.remove();
+}
+</script>
+{% endblock %}

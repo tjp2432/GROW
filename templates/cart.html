@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Carrito - Perrone's INC{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li class="breadcrumb-item active">Carrito</li>
+            </ol>
+        </nav>
+        <h1>Carrito de Compras</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if items %}
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cart-items">
+                    {% for item in items %}
+                    <div class="cart-item" data-id="{{ item.id }}">
+                        <div class="cart-item-img">
+                            {% set emojis = {'bongs': '🏺', 'pipas': '🚬', 'picadores': '⚙️', 'papeles': '📄', 'vaporizadores': '💨', 'iluminacion': '💡', 'fertilizantes': '🧪', 'accesorios': '🔧'} %}
+                            <span style="font-size: 2rem;">📦</span>
+                        </div>
+                        <div class="cart-item-info">
+                            <h5>{{ item.name }}</h5>
+                            <p class="text-muted mb-0">${{ "{:,.0f}".format(item.price) }} c/u</p>
+                        </div>
+                        <div class="cart-item-qty">
+                            <button class="qty-btn" onclick="updateCart({{ item.id }}, {{ item.quantity - 1 }})">-</button>
+                            <input type="number" value="{{ item.quantity }}" min="1" class="qty-input" readonly>
+                            <button class="qty-btn" onclick="updateCart({{ item.id }}, {{ item.quantity + 1 }})">+</button>
+                        </div>
+                        <div class="cart-item-total">
+                            <strong>${{ "{:,.0f}".format(item.subtotal) }}</strong>
+                        </div>
+                        <button class="cart-item-remove" onclick="removeFromCart({{ item.id }})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <h4>Resumen</h4>
+                    <div class="summary-line">
+                        <span>Subtotal</span>
+                        <span>${{ "{:,.0f}".format(total) }}</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Envío</span>
+                        <span>A calcular</span>
+                    </div>
+                    <hr>
+                    <div class="summary-line total">
+                        <span>Total</span>
+                        <span>${{ "{:,.0f}".format(total) }}</span>
+                    </div>
+                    <a href="{{ url_for('checkout') }}" class="btn btn-primary w-100 mt-3 btn-lg">
+                        Proceder al Pago <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    <a href="{{ url_for('products') }}" class="btn btn-outline-secondary w-100 mt-2">
+                        Seguir Comprando
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-bag" style="font-size: 4rem; opacity: 0.3;"></i>
+            <h3 class="mt-3">Tu carrito está vacío</h3>
+            <p class="text-muted">Agregá productos para empezar tu compra.</p>
+            <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg mt-3">
+                <i class="bi bi-cart-plus me-2"></i> Ir a Productos
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

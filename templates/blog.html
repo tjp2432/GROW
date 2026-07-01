@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Blog - Perrone's INC{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li class="breadcrumb-item active">Blog</li>
+            </ol>
+        </nav>
+        <h1>Blog</h1>
+        <p>Contenido sobre cultura, cultivo, vaporización y más.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if categories %}
+        <div class="blog-filters mb-4">
+            <a href="{{ url_for('blog') }}" class="blog-filter-btn {% if not request.args.get('categoria') %}active{% endif %}">Todas</a>
+            {% for cat in categories %}
+            <a href="{{ url_for('blog', categoria=cat) }}" class="blog-filter-btn {% if request.args.get('categoria') == cat %}active{% endif %}">{{ cat }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if posts.items %}
+        <div class="row g-4">
+            {% for post in posts.items %}
+            <div class="col-lg-4 col-md-6">
+                <article class="blog-card">
+                    <div class="blog-img">
+                        {% if post.image %}
+                        <img src="{{ url_for('static', filename=post.image) }}" alt="{{ post.title }}" style="width:100%;height:100%;object-fit:cover;">
+                        {% else %}
+                        <div class="blog-img-placeholder">
+                            <span class="placeholder-icon"><i class="bi bi-pencil-square"></i></span>
+                        </div>
+                        {% endif %}
+                        <span class="blog-category">{{ post.category }}</span>
+                    </div>
+                    <div class="blog-body">
+                        <div class="blog-meta">
+                            <span><i class="bi bi-calendar3"></i> {{ post.created_at.strftime('%d/%m/%Y') }}</span>
+                            <span><i class="bi bi-person"></i> {{ post.author }}</span>
+                        </div>
+                        <h4>{{ post.title }}</h4>
+                        <p>{{ post.excerpt[:150] }}{% if post.excerpt|length > 150 %}...{% endif %}</p>
+                        <a href="{{ url_for('blog_post', slug=post.slug) }}" class="btn btn-link p-0">Seguir Leyendo <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if posts.pages > 1 %}
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if posts.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('blog', page=posts.prev_num, categoria=request.args.get('categoria')) }}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+                {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                    <li class="page-item {% if page_num == posts.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('blog', page=page_num, categoria=request.args.get('categoria')) }}">{{ page_num }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                {% if posts.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('blog', page=posts.next_num, categoria=request.args.get('categoria')) }}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-journal-text" style="font-size: 3rem; opacity: 0.3;"></i>
+            <h4 class="mt-3">No hay artículos aún</h4>
+            <p class="text-muted">Estamos preparando contenido nuevo. Volvé pronto.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

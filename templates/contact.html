@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Contacto - Perrone's INC{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li class="breadcrumb-item active">Contacto</li>
+            </ol>
+        </nav>
+        <h1>Contactanos</h1>
+        <p>Tenemos ganas de escucharte. Consultá, preguntá o saludános.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <form method="POST" action="{{ url_for('contact') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label class="form-label">Nombre *</label>
+                        {{ form.name(class="form-control", placeholder="Tu nombre") }}
+                        {% for error in form.name.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email *</label>
+                        {{ form.email(class="form-control", placeholder="tu@email.com") }}
+                        {% for error in form.email.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Asunto</label>
+                        {{ form.subject(class="form-control", placeholder="¿Sobre qué querés hablarnos?") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mensaje *</label>
+                        {{ form.message(class="form-control", rows="5", placeholder="Escribí tu mensaje aquí...") }}
+                        {% for error in form.message.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-send me-2"></i> Enviar Mensaje
+                    </button>
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <div class="contact-info">
+                    <h3>Información de Contacto</h3>
+                    <div class="contact-item">
+                        <i class="bi bi-whatsapp"></i>
+                        <div>
+                            <strong>WhatsApp</strong>
+                            <p>+54 11 6951-5399</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-envelope"></i>
+                        <div>
+                            <strong>Email</strong>
+                            <p>info@perronesinc.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <div>
+                            <strong>Ubicación</strong>
+                            <p>Buenos Aires, Argentina</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-clock"></i>
+                        <div>
+                            <strong>Horarios</strong>
+                            <p>Lun-Sáb: 10:00 - 20:00</p>
+                        </div>
+                    </div>
+                    <div class="social-links mt-4">
+                        <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
+                        <a href="#" class="social-link"><i class="bi bi-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

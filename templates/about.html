@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Nosotros - Perrone's INC{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li class="breadcrumb-item active">Nosotros</li>
+            </ol>
+        </nav>
+        <h1>Sobre Perrone's INC</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <div class="about-image">
+                    <div class="about-image-placeholder">
+                        <div>
+                            <span class="brand-text" style="font-size:3rem;">PERRONE'S</span><br>
+                            <span class="brand-inc" style="font-size:2rem;">INC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h2>Nuestra Historia</h2>
+                <p class="lead">Perrone's INC nació de la pasión por la cultura cannábica y el deseo de ofrecer productos de calidad a la comunidad.</p>
+                <p>Somos un growshop comprometido con brindar la mejor experiencia a nuestros clientes. Desde nuestros inicios, nos enfocamos en seleccionar cuidadosamente cada producto que ofrecemos, asegurando calidad, durabilidad y el mejor precio.</p>
+                <p>Creemos en el consumo responsable, la educación y el respeto por la planta. Por eso, además de vender productos, creamos contenido educativo en nuestro blog para que cada vez más personas puedan informarse y disfrutar de forma consciente.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section bg-dark-section">
+    <div class="container">
+        <h2 class="text-center mb-5">¿Por qué elegirnos?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="bi bi-shield-check feature-icon"></i>
+                    <h4>Calidad Garantizada</h4>
+                    <p class="text-muted">Seleccionamos los mejores productos del mercado para asegurar tu satisfacción.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="bi bi-truck feature-icon"></i>
+                    <h4>Envío Discreto</h4>
+                    <p class="text-muted">Recibí tu pedido en la puerta de tu casa en empaques neutros y discretos.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="bi bi-chat-dots feature-icon"></i>
+                    <h4>Atención Personalizada</h4>
+                    <p class="text-muted">Consultános lo que necesites. Estamos para ayudarte a encontrar lo que buscás.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container text-center">
+        <h2>Visitanos</h2>
+        <p class="lead">Buenos Aires, Argentina</p>
+        <p class="text-muted">Lunes a Sábados de 10:00 a 20:00</p>
+        <div class="mt-4">
+            <a href="https://wa.me/541169515399" target="_blank" class="btn btn-success btn-lg me-2">
+                <i class="bi bi-whatsapp me-2"></i> WhatsApp
+            </a>
+            <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-envelope me-2"></i> Contacto
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

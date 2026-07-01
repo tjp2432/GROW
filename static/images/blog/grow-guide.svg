@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a2818"/>
+      <stop offset="50%" style="stop-color:#143d24"/>
+      <stop offset="100%" style="stop-color:#1a4a2e"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4caf50"/>
+      <stop offset="100%" style="stop-color:#2e7d32"/>
+    </linearGradient>
+    <linearGradient id="light" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffeb3b;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#ffeb3b;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <circle cx="400" cy="250" r="200" fill="rgba(76,175,80,0.05)"/>
+  <circle cx="400" cy="250" r="140" fill="rgba(76,175,80,0.08)"/>
+  <ellipse cx="400" cy="420" rx="350" ry="60" fill="rgba(0,0,0,0.3)"/>
+  <g transform="translate(400,220)">
+    <path d="M0,80 C-20,50 -60,20 -80,0 C-60,-10 -40,-5 -20,15 C-30,-20 -50,-60 -45,-85 C-25,-75 -10,-40 0,0 C10,-40 25,-75 45,-85 C50,-60 30,-20 20,15 C40,-5 60,-10 80,0 C60,20 20,50 0,80Z" fill="url(#leaf)" opacity="0.9"/>
+    <line x1="0" y1="80" x2="0" y2="-85" stroke="#1b5e20" stroke-width="2"/>
+    <line x1="0" y1="40" x2="-25" y2="10" stroke="#1b5e20" stroke-width="1.5" opacity="0.6"/>
+    <line x1="0" y1="20" x2="25" y2="-10" stroke="#1b5e20" stroke-width="1.5" opacity="0.6"/>
+    <line x1="0" y1="0" x2="-15" y2="-30" stroke="#1b5e20" stroke-width="1.5" opacity="0.6"/>
+    <line x1="0" y1="-20" x2="18" y2="-55" stroke="#1b5e20" stroke-width="1.5" opacity="0.6"/>
+  </g>
+  <rect x="150" y="380" width="500" height="60" rx="8" fill="rgba(0,0,0,0.5)"/>
+  <text x="400" y="418" text-anchor="middle" fill="#4caf50" font-family="Arial,sans-serif" font-size="22" font-weight="bold">GUÍA COMPLETA DE CULTIVO INDOOR</text>
+  <text x="400" y="455" text-anchor="middle" fill="#81c784" font-family="Arial,sans-serif" font-size="13">Iluminación · Ventilación · Nutrientes · Entrenamiento · Cosecha · Curado</text>
+  <g transform="translate(100,120)">
+    <rect x="0" y="0" width="40" height="40" rx="8" fill="rgba(255,235,59,0.2)"/>
+    <text x="20" y="27" text-anchor="middle" fill="#ffeb3b" font-family="Arial" font-size="22">💡</text>
+  </g>
+  <g transform="translate(660,120)">
+    <rect x="0" y="0" width="40" height="40" rx="8" fill="rgba(76,175,80,0.2)"/>
+    <text x="20" y="27" text-anchor="middle" fill="#4caf50" font-family="Arial" font-size="22">🌱</text>
+  </g>
+  <g transform="translate(380,130)">
+    <rect x="0" y="0" width="40" height="40" rx="8" fill="rgba(255,152,0,0.2)"/>
+    <text x="20" y="27" text-anchor="middle" fill="#ff9800" font-family="Arial" font-size="22">🔬</text>
+  </g>
+</svg>

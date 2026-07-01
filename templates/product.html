@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} - Perrone's INC{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('products') }}">Productos</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('products', categoria=product.category.slug) }}">{{ product.category.name }}</a></li>
+                <li class="breadcrumb-item active">{{ product.name[:40] }}{% if product.name|length > 40 %}...{% endif %}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <div class="product-gallery">
+                    <div class="product-main-image">
+                        {% if product.image %}
+                        <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" style="width:100%;height:auto;object-fit:cover;border-radius:20px;">
+                        {% else %}
+                        <div class="product-img-placeholder-lg" data-category="{{ product.category.slug }}">
+                            {% set emojis = {'bongs': '🏺', 'pipas': '🚬', 'picadores': '⚙️', 'papeles': '📄', 'vaporizadores': '💨', 'iluminacion': '💡', 'fertilizantes': '🧪', 'accesorios': '🔧'} %}
+                            <span class="placeholder-emoji-lg">{{ emojis.get(product.category.slug, '📦') }}</span>
+                            <span class="placeholder-text">{{ product.category.name }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="product-info">
+                    <span class="product-category-badge">{{ product.category.name }}</span>
+                    <h1 class="product-title-lg">{{ product.name }}</h1>
+                    <div class="product-pricing">
+                        {% if product.compare_price %}
+                        <span class="price-old-lg">${{ "{:,.0f}".format(product.compare_price) }}</span>
+                        <span class="price-discount">-{{ ((1 - product.price / product.compare_price) * 100)|int }}%</span>
+                        {% endif %}
+                        <div class="price-current-lg">${{ "{:,.0f}".format(product.price) }}</div>
+                    </div>
+                    {% if product.short_description %}
+                    <p class="product-desc">{{ product.short_description }}</p>
+                    {% endif %}
+                    <div class="product-full-desc mt-3">
+                        {{ product.description|safe }}
+                    </div>
+                    <div class="product-stock mt-3">
+                        {% if product.stock > 10 %}
+                        <span class="stock-badge in-stock"><i class="bi bi-check-circle-fill"></i> En stock</span>
+                        {% elif product.stock > 0 %}
+                        <span class="stock-badge low-stock"><i class="bi bi-exclamation-circle-fill"></i> Quedan {{ product.stock }} unidades</span>
+                        {% else %}
+                        <span class="stock-badge out-of-stock"><i class="bi bi-x-circle-fill"></i> Sin stock</span>
+                        {% endif %}
+                    </div>
+                    <div class="product-actions-lg mt-4">
+                        {% if product.stock > 0 %}
+                        <div class="quantity-selector">
+                            <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                            <input type="number" id="qty" value="1" min="1" max="{{ product.stock }}" class="qty-input">
+                            <button class="qty-btn" onclick="changeQty(1)">+</button>
+                        </div>
+                        <button class="btn btn-primary btn-lg flex-grow-1" onclick="addToCart({{ product.id }})">
+                            <i class="bi bi-cart-plus me-2"></i> Agregar al Carrito
+                        </button>
+                        {% else %}
+                        <button class="btn btn-secondary btn-lg disabled">Agotado</button>
+                        {% endif %}
+                    </div>
+                    <div class="product-meta mt-4">
+                        <div class="meta-item">
+                            <i class="bi bi-truck"></i>
+                            <span>Envío a todo el país</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="bi bi-shield-check"></i>
+                            <span>Compra segura</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="bi bi-arrow-return-left"></i>
+                            <span>Cambios y devoluciones</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if related %}
+<section class="section bg-dark-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Productos Relacionados</h2>
+        </div>
+        <div class="row g-4">
+            {% for prod in related %}
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="product-card">
+                    <div class="product-img">
+                        {% if prod.image %}
+                        <img src="{{ url_for('static', filename=prod.image) }}" alt="{{ prod.name }}" style="width:100%;height:100%;object-fit:cover;">
+                        {% else %}
+                        <div class="product-img-placeholder" data-category="{{ prod.category.slug }}">
+                            {% set emojis = {'bongs': '🏺', 'pipas': '🚬', 'picadores': '⚙️', 'papeles': '📄', 'vaporizadores': '💨', 'iluminacion': '💡', 'fertilizantes': '🧪', 'accesorios': '🔧'} %}
+                            <span class="placeholder-emoji">{{ emojis.get(prod.category.slug, '📦') }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="product-body">
+                        <span class="product-category">{{ prod.category.name }}</span>
+                        <h5 class="product-title">{{ prod.name[:35] }}{% if prod.name|length > 35 %}...{% endif %}</h5>
+                        <div class="product-price">
+                            <span class="price-current">${{ "{:,.0f}".format(prod.price) }}</span>
+                        </div>
+                        <a href="{{ url_for('product_detail', slug=prod.slug) }}" class="btn btn-sm btn-outline-primary w-100 mt-2">Ver</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function changeQty(delta) {
+    const input = document.getElementById('qty');
+    let val = parseInt(input.value) + delta;
+    if (val < 1) val = 1;
+    if (val > {{ product.stock }}) val = {{ product.stock }};
+    input.value = val;
+}
+</script>
+{% endblock %}

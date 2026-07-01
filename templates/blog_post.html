@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }} - Perrone's INC Blog{% endblock %}
+{% block meta_desc %}{{ post.excerpt[:160] }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('blog') }}">Blog</a></li>
+                <li class="breadcrumb-item active">{{ post.title[:50] }}{% if post.title|length > 50 %}...{% endif %}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <article class="blog-article">
+                    {% if post.image %}
+                    <div class="blog-hero-image mb-4">
+                        <img src="{{ url_for('static', filename=post.image) }}" alt="{{ post.title }}" style="width:100%;max-height:400px;object-fit:cover;border-radius:16px;">
+                    </div>
+                    {% endif %}
+                    <div class="blog-article-header">
+                        <span class="blog-category-badge">{{ post.category }}</span>
+                        <h1>{{ post.title }}</h1>
+                        <div class="blog-article-meta">
+                            <span><i class="bi bi-person"></i> {{ post.author }}</span>
+                            <span><i class="bi bi-calendar3"></i> {{ post.created_at.strftime('%d de %B, %Y') }}</span>
+                            {% if post.tags %}
+                            <span><i class="bi bi-tags"></i> {{ post.tags }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="blog-article-content">
+                        {{ post.content|safe }}
+                    </div>
+                    <div class="blog-article-footer">
+                        <a href="{{ url_for('blog') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i> Volver al Blog
+                        </a>
+                    </div>
+                </article>
+            </div>
+            <div class="col-lg-4">
+                <div class="blog-sidebar">
+                    <div class="sidebar-widget">
+                        <h5>Artículos Recientes</h5>
+                        {% for rp in recent %}
+                        <a href="{{ url_for('blog_post', slug=rp.slug) }}" class="recent-post">
+                            <div class="recent-post-icon"><i class="bi bi-file-text"></i></div>
+                            <div>
+                                <h6>{{ rp.title[:40] }}{% if rp.title|length > 40 %}...{% endif %}</h6>
+                                <small class="text-muted">{{ rp.created_at.strftime('%d/%m/%Y') }}</small>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    <div class="sidebar-widget">
+                        <h5>Categorías</h5>
+                        <div class="sidebar-categories">
+                            <a href="{{ url_for('blog') }}" class="cat-link">Todas</a>
+                            {% set cats = ['Cultivo', 'Cultura', 'Vaporización', 'Accesorios'] %}
+                            {% for cat in cats %}
+                            <a href="{{ url_for('blog', categoria=cat) }}" class="cat-link">{{ cat }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="sidebar-widget sidebar-cta">
+                        <h5>Visitá nuestra Tienda</h5>
+                        <p>Equipate con los mejores productos para cultivo y parafernalia.</p>
+                        <a href="{{ url_for('products') }}" class="btn btn-primary w-100">Ver Productos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

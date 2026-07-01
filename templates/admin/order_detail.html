@@ -1,0 +1,71 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Pedido {{ order.order_number }}{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Pedido {{ order.order_number }}</h2>
+    <a href="{{ url_for('admin_orders') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="card bg-dark-card">
+            <div class="card-body">
+                <h5>Productos</h5>
+                <table class="admin-table">
+                    <thead>
+                        <tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items %}
+                        <tr>
+                            <td>{{ item.product_name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ "{:,.0f}".format(item.price) }}</td>
+                            <td>${{ "{:,.0f}".format(item.price * item.quantity) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-dark-card">
+            <div class="card-body">
+                <h5>Resumen</h5>
+                <div class="summary-line"><span>Subtotal</span><span>${{ "{:,.0f}".format(order.subtotal) }}</span></div>
+                <div class="summary-line"><span>Envío</span><span>{% if order.shipping > 0 %}${{ "{:,.0f}".format(order.shipping) }}{% else %}Gratis{% endif %}</span></div>
+                <hr>
+                <div class="summary-line total"><span>Total</span><span>${{ "{:,.0f}".format(order.total) }}</span></div>
+            </div>
+        </div>
+        <div class="card bg-dark-card mt-3">
+            <div class="card-body">
+                <h5>Cliente</h5>
+                <p class="mb-1"><strong>{{ order.full_name }}</strong></p>
+                <p class="mb-1 text-muted small">{{ order.email }}</p>
+                {% if order.phone %}<p class="mb-1 text-muted small">{{ order.phone }}</p>{% endif %}
+                <hr>
+                <h6>Dirección</h6>
+                <p class="text-muted small">{{ order.address }}</p>
+                <p class="text-muted small">{{ order.city }}{% if order.state %}, {{ order.state }}{% endif %} {% if order.zip_code %}({{ order.zip_code }}){% endif %}</p>
+            </div>
+        </div>
+        <div class="card bg-dark-card mt-3">
+            <div class="card-body">
+                <h5>Estado</h5>
+                {% set statuses = {'pending': 'Pendiente', 'confirmed': 'Confirmado', 'shipped': 'Enviado', 'delivered': 'Entregado', 'cancelled': 'Cancelado'} %}
+                <form method="POST" action="{{ url_for('admin_order_status', id=order.id) }}">
+                    <select name="status" class="form-select mb-2">
+                        {% for key, label in statuses.items() %}
+                        <option value="{{ key }}" {% if order.status == key %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary w-100">Actualizar Estado</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

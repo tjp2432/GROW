@@ -1,0 +1,113 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Dashboard</h2>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="admin-stat">
+            <div class="stat-icon" style="background: #1a3a2a;"><i class="bi bi-box text-success"></i></div>
+            <div>
+                <h3>{{ stats.products }}</h3>
+                <small class="text-muted">Productos</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-stat">
+            <div class="stat-icon" style="background: #1a2a3a;"><i class="bi bi-truck text-info"></i></div>
+            <div>
+                <h3>{{ stats.orders }}</h3>
+                <small class="text-muted">Pedidos</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-stat">
+            <div class="stat-icon" style="background: #2a1a1a;"><i class="bi bi-clock text-warning"></i></div>
+            <div>
+                <h3>{{ stats.pending_orders }}</h3>
+                <small class="text-muted">Pendientes</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-stat">
+            <div class="stat-icon" style="background: #1a2a1a;"><i class="bi bi-cash-coin text-success"></i></div>
+            <div>
+                <h3>${{ "{:,.0f}".format(stats.revenue) }}</h3>
+                <small class="text-muted">Ingresos</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="admin-stat">
+            <div class="stat-icon" style="background: #1a1a2a;"><i class="bi bi-envelope text-primary"></i></div>
+            <div>
+                <h3>{{ stats.contacts }}</h3>
+                <small class="text-muted">Mensajes sin leer</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="admin-stat">
+            <div class="stat-icon" style="background: #2a1a2a;"><i class="bi bi-journal-text text-purple" style="color: #bb86fc;"></i></div>
+            <div>
+                <h3>{{ stats.posts }}</h3>
+                <small class="text-muted">Artículos Blog</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <a href="{{ url_for('admin_products') }}" class="admin-stat text-decoration-none">
+            <div class="stat-icon" style="background: #1a2a1a;"><i class="bi bi-plus-circle text-success"></i></div>
+            <div>
+                <h5 class="mb-0">Nuevo Producto</h5>
+                <small class="text-muted">Agregar al catálogo</small>
+            </div>
+        </a>
+    </div>
+</div>
+
+<h4 class="mt-4 mb-3">Últimos Pedidos</h4>
+<div class="admin-table-container">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>N° Pedido</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if recent_orders %}
+            {% for order in recent_orders %}
+            <tr>
+                <td><strong>{{ order.order_number }}</strong></td>
+                <td>{{ order.full_name }}</td>
+                <td>${{ "{:,.0f}".format(order.total) }}</td>
+                <td>
+                    {% set statuses = {'pending': 'Pendiente', 'confirmed': 'Confirmado', 'shipped': 'Enviado', 'delivered': 'Entregado', 'cancelled': 'Cancelado'} %}
+                    {% set badges = {'pending': 'warning', 'confirmed': 'info', 'shipped': 'primary', 'delivered': 'success', 'cancelled': 'danger'} %}
+                    <span class="badge bg-{{ badges.get(order.status, 'secondary') }}">{{ statuses.get(order.status, order.status) }}</span>
+                </td>
+                <td>{{ order.created_at.strftime('%d/%m/%Y') }}</td>
+                <td><a href="{{ url_for('admin_order_detail', id=order.id) }}" class="btn btn-sm btn-outline-primary">Ver</a></td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr><td colspan="6" class="text-center text-muted py-3">No hay pedidos aún</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

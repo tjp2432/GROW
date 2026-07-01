@@ -1,0 +1,45 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Mensajes{% endblock %}
+
+{% block admin_content %}
+<h2 class="mb-4">Mensajes de Contacto</h2>
+
+<div class="admin-table-container">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Asunto</th>
+                <th>Mensaje</th>
+                <th>Leído</th>
+                <th>Fecha</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for msg in messages %}
+            <tr class="{% if not msg.read %}table-active{% endif %}">
+                <td>{{ msg.id }}</td>
+                <td>{{ msg.name }}</td>
+                <td>{{ msg.email }}</td>
+                <td>{{ msg.subject or '-' }}</td>
+                <td>{{ msg.message[:60] }}{% if msg.message|length > 60 %}...{% endif %}</td>
+                <td>{% if msg.read %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-envelope-fill text-warning"></i>{% endif %}</td>
+                <td>{{ msg.created_at.strftime('%d/%m/%Y') }}</td>
+                <td>
+                    {% if not msg.read %}
+                    <form method="POST" action="{{ url_for('admin_message_read', id=msg.id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-check2"></i> Leído</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="text-center text-muted py-3">No hay mensajes</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

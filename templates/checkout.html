@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - Perrone's INC{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('cart') }}">Carrito</a></li>
+                <li class="breadcrumb-item active">Checkout</li>
+            </ol>
+        </nav>
+        <h1>Finalizar Compra</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="checkout-form">
+                    <h3>Datos de Envío</h3>
+                    <form method="POST" action="{{ url_for('checkout') }}">
+                        {{ form.hidden_tag() }}
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Nombre Completo *</label>
+                                {{ form.full_name(class="form-control", placeholder="Juan Pérez") }}
+                                {% for error in form.full_name.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email *</label>
+                                {{ form.email(class="form-control", placeholder="correo@ejemplo.com") }}
+                                {% for error in form.email.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Teléfono</label>
+                                {{ form.phone(class="form-control", placeholder="11 6951-5399") }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Dirección *</label>
+                                {{ form.address(class="form-control", placeholder="Av. Siempre Viva 123") }}
+                                {% for error in form.address.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label">Ciudad *</label>
+                                {{ form.city(class="form-control", placeholder="Buenos Aires") }}
+                                {% for error in form.city.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Provincia</label>
+                                {{ form.state(class="form-control", placeholder="CABA") }}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">CP</label>
+                                {{ form.zip_code(class="form-control", placeholder="1425") }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Notas del pedido</label>
+                                {{ form.notes(class="form-control", rows="3", placeholder="¿Alguna nota especial?") }}
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="bi bi-check-circle me-2"></i> Confirmar Pedido
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="checkout-summary">
+                    <h4>Resumen del Pedido</h4>
+                    <div class="checkout-items">
+                        {% set cart = session.get('cart', {}) %}
+                        {% set ns = namespace(subtotal=0) %}
+                        {% for pid, citem in cart.items() %}
+                            {% set prod = namespace(obj=None) %}
+                            {% for p in [{'id': pid|int}] %}
+                                {% for product in [{}] %}{% endfor %}
+                            {% endfor %}
+                        {% endfor %}
+                        <div id="checkoutItems"></div>
+                    </div>
+                    <hr>
+                    <div class="summary-line">
+                        <span>Subtotal</span>
+                        <span id="checkoutSubtotal">$0</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Envío</span>
+                        <span id="checkoutShipping">A calcular</span>
+                    </div>
+                    <hr>
+                    <div class="summary-line total">
+                        <span>Total</span>
+                        <span id="checkoutTotal">$0</span>
+                    </div>
+                    <div class="payment-info mt-3">
+                        <p class="mb-1"><i class="bi bi-info-circle me-1"></i> Método de pago:</p>
+                        <p class="fw-bold">Transferencia bancaria / Efectivo</p>
+                        <p class="text-muted small">Te enviaremos los datos para realizar el pago después de confirmar el pedido.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function loadCheckoutSummary() {
+    try {
+        const res = await fetch('/api/cart');
+        const data = await res.json();
+        const container = document.getElementById('checkoutItems');
+        container.innerHTML = data.items.map(item => `
+            <div class="checkout-item">
+                <span>${item.quantity}x ${item.name}</span>
+                <span>$${item.subtotal.toLocaleString('es-AR')}</span>
+            </div>
+        `).join('');
+        document.getElementById('checkoutSubtotal').textContent = '$' + data.total.toLocaleString('es-AR');
+        const shipping = data.total >= 10000 ? 0 : Math.round(data.total * 0.1);
+        document.getElementById('checkoutShipping').textContent = shipping === 0 ? 'Gratis' : '$' + shipping.toLocaleString('es-AR');
+        document.getElementById('checkoutTotal').textContent = '$' + (data.total + shipping).toLocaleString('es-AR');
+    } catch (e) {
+        console.error('Error loading cart:', e);
+    }
+}
+loadCheckoutSummary();
+</script>
+{% endblock %}
